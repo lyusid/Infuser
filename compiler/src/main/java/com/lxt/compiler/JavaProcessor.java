@@ -3,6 +3,7 @@ package com.lxt.compiler;
 import com.google.auto.common.SuperficialValidation;
 import com.google.auto.service.AutoService;
 import com.lxt.annotation.Infuse;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
@@ -23,8 +24,11 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
+import javax.lang.model.element.Name;
+import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic.Kind;
@@ -82,7 +86,9 @@ public class JavaProcessor extends AbstractProcessor {
         for (Element element : roundEnvironment.getElementsAnnotatedWith(Infuse.class)) {
             if (!SuperficialValidation.validateElement(element))
                 continue;
-            printNote("Find a element named " + element.getClass().getSimpleName());
+            PackageElement packageElement = elements.getPackageOf(element);
+            Name qualifiedName = packageElement.getQualifiedName();
+            printNote("Find a element annotated with Infuse " + qualifiedName);
             boolean isField = element.getKind() == ElementKind.FIELD;
             if (isField)
                 process(element);
@@ -101,7 +107,7 @@ public class JavaProcessor extends AbstractProcessor {
         MethodSpec factory = MethodSpec.methodBuilder(METHOD_NEWINSTANCE)
                 .addModifiers(Modifier.PUBLIC, Modifier.SYNCHRONIZED, Modifier.STATIC)
                 .returns(typeName)
-                .addStatement("return null")
+                .addStatement("return new $T()", typeName)
                 .build();
         TypeSpec typeSpec = builder.addMethod(factory)
                 .build();
