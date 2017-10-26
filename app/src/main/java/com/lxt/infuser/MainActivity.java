@@ -10,7 +10,7 @@ import com.org.lxt.infuse.InfuserFactory;
 public class MainActivity extends AppCompatActivity {
 
     @Infuse
-    public Singer singer;
+    private Singer singer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

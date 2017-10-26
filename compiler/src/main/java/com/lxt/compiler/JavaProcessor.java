@@ -6,6 +6,7 @@ import com.lxt.annotation.Infuse;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.MethodSpec.Builder;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
@@ -106,14 +107,19 @@ public class JavaProcessor extends AbstractProcessor {
         Element enclosingElement = typeElement.getEnclosingElement();
         TypeName typeName = TypeName.get(typeElement.asType());
         printNote(typeElement.getSimpleName() + " " + typeName);
-        MethodSpec factory = MethodSpec.methodBuilder(METHOD_NEWINSTANCE)
+        Builder factory = MethodSpec.methodBuilder(METHOD_NEWINSTANCE)
                 .addModifiers(Modifier.PUBLIC, Modifier.SYNCHRONIZED, Modifier.STATIC)
                 .addParameter(ClassName.get(enclosingElement.asType()), "object")
-                .returns(typeName)
-                .addStatement("object.$N = ($T)new $T()", typeElement.getSimpleName(), ClassName.get(typeElement.asType()), typeName)
-                .addStatement("return object.$N", typeElement.getSimpleName())
-                .build();
-        TypeSpec typeSpec = builder.addMethod(factory)
+                .returns(typeName);
+        Set<Modifier> modifiers = typeElement.getModifiers();
+        if (modifiers.contains(Modifier.PUBLIC)) {
+            factory.addStatement("object.$N = ($T)new $T()", typeElement.getSimpleName(), ClassName.get(typeElement.asType()), typeName);
+            factory.addStatement("return object.$N", typeElement.getSimpleName());
+        }else{
+//            printError("This filed should be public");
+            factory.addStatement("return null");
+        }
+        TypeSpec typeSpec = builder.addMethod(factory.build())
                 .superclass(TypeName.get(enclosingElement.asType()))
                 .build();
         javaFile = JavaFile.builder(PACKAGE_NAME, typeSpec)
