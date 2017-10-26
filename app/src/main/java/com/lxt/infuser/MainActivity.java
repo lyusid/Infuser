@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         for (int i = 0; i < 2; i++) {
             if (i == 1)
-                InfuserFactory.newInstance(this);
+                InfuserFactory.bind(this);
             Log.d("TAG", "singer = " + singer);
         }
     }

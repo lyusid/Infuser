@@ -38,7 +38,7 @@ public class JavaProcessor extends AbstractProcessor {
 
     private static final String PACKAGE_NAME = "com.org.lxt.infuse";
 
-    private static final String METHOD_NEWINSTANCE = "newInstance";
+    private static final String METHOD_NEWINSTANCE = "bind";
 
     private Elements elements;
 
