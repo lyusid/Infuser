@@ -24,6 +24,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic.Kind;
@@ -83,26 +84,28 @@ public class JavaProcessor extends AbstractProcessor {
                 continue;
             printNote("Find a element named " + element.getClass().getSimpleName());
             boolean isField = element.getKind() == ElementKind.FIELD;
-//            if (isField)
+            if (isField)
                 process(element);
-//            else
-//                printError("The type of target should be Filed");
+            else
+                printError("The type of target should be Filed");
         }
 
     }
 
     private void process(Element element) {
-        TypeElement typeElement = (TypeElement) element;
-        TypeSpec.Builder builder = TypeSpec.classBuilder(typeElement.getSimpleName() + "Factory")
+        VariableElement typeElement = (VariableElement) element;
+        TypeSpec.Builder builder = TypeSpec.classBuilder("ObjectFactory")
                 .addModifiers(Modifier.PUBLIC);
+        JavaFile javaFile;
+        TypeName typeName = TypeName.get(typeElement.asType());
         MethodSpec factory = MethodSpec.methodBuilder(METHOD_NEWINSTANCE)
-                .addModifiers(Modifier.PUBLIC, Modifier.SYNCHRONIZED)
-                .returns(TypeName.BOOLEAN)
-                .addStatement("return true")
+                .addModifiers(Modifier.PUBLIC, Modifier.SYNCHRONIZED, Modifier.STATIC)
+                .returns(typeName)
+                .addStatement("return null")
                 .build();
         TypeSpec typeSpec = builder.addMethod(factory)
                 .build();
-        JavaFile javaFile = JavaFile.builder(PACKAGE_NAME, typeSpec)
+        javaFile = JavaFile.builder(PACKAGE_NAME, typeSpec)
                 .build();
         try {
             javaFile.writeTo(System.out);

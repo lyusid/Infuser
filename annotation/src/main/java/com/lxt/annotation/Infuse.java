@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  * @since 2017/10/26
  */
 
-@Target(ElementType.TYPE)
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.CLASS)
 public @interface Infuse {
 
