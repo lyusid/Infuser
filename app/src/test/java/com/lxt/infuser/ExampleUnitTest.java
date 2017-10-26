@@ -1,4 +1,4 @@
-package com.lxt.infusertest;
+package com.lxt.infuser;
 
 import org.junit.Test;
 

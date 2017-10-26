@@ -1,4 +1,4 @@
-package com.lxt.infusertest;
+package com.lxt.infuser;
 
 /**
  * @author lxt <lxt352@gmail.com>

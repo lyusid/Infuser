@@ -1,4 +1,4 @@
-package com.lxt.infusertest;
+package com.lxt.infuser;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
