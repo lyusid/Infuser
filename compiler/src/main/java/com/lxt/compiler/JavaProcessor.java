@@ -100,16 +100,21 @@ public class JavaProcessor extends AbstractProcessor {
 
     private void process(Element element) {
         VariableElement typeElement = (VariableElement) element;
-        TypeSpec.Builder builder = TypeSpec.classBuilder("ObjectFactory")
+        TypeSpec.Builder builder = TypeSpec.classBuilder("InfuserFactory")
                 .addModifiers(Modifier.PUBLIC);
         JavaFile javaFile;
+        Element enclosingElement = typeElement.getEnclosingElement();
         TypeName typeName = TypeName.get(typeElement.asType());
+        printNote(typeElement.getSimpleName() + " " + typeName);
         MethodSpec factory = MethodSpec.methodBuilder(METHOD_NEWINSTANCE)
                 .addModifiers(Modifier.PUBLIC, Modifier.SYNCHRONIZED, Modifier.STATIC)
+                .addParameter(ClassName.get(enclosingElement.asType()), "object")
                 .returns(typeName)
-                .addStatement("return new $T()", typeName)
+                .addStatement("object.$N = ($T)new $T()", typeElement.getSimpleName(), ClassName.get(typeElement.asType()), typeName)
+                .addStatement("return object.$N", typeElement.getSimpleName())
                 .build();
         TypeSpec typeSpec = builder.addMethod(factory)
+                .superclass(TypeName.get(enclosingElement.asType()))
                 .build();
         javaFile = JavaFile.builder(PACKAGE_NAME, typeSpec)
                 .build();
