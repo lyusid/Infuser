@@ -101,7 +101,7 @@ public class InfuseProcessor extends AbstractProcessor {
 
     private void process(Element element) {
         VariableElement typeElement = (VariableElement) element;
-        TypeSpec.Builder builder = TypeSpec.classBuilder("InfuserFactory")
+        TypeSpec.Builder builder = TypeSpec.classBuilder("Infuser")
                 .addModifiers(Modifier.PUBLIC);
         JavaFile javaFile;
         Element enclosingElement = typeElement.getEnclosingElement();

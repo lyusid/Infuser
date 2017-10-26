@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.lxt.annotation.Infuse;
-import com.org.lxt.infuse.InfuserFactory;
+import com.org.lxt.infuse.Infuser;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         for (int i = 0; i < 2; i++) {
             if (i == 1)
-                InfuserFactory.bind(this);
+                Infuser.bind(this);
             Log.d("TAG", "singer = " + singer);
         }
     }
