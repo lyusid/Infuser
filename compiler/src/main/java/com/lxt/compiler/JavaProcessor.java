@@ -2,7 +2,7 @@ package com.lxt.compiler;
 
 import com.google.auto.common.SuperficialValidation;
 import com.google.auto.service.AutoService;
-import com.lxt.annotation.Test;
+import com.lxt.annotation.Infuse;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
@@ -61,7 +61,7 @@ public class JavaProcessor extends AbstractProcessor {
     @Override
     public Set<String> getSupportedAnnotationTypes() {
         Set<String> types = new LinkedHashSet<>();
-        types.add(Test.class.getCanonicalName());
+        types.add(Infuse.class.getCanonicalName());
         return types;
     }
 
@@ -78,7 +78,7 @@ public class JavaProcessor extends AbstractProcessor {
     }
 
     private void findAndParseElement(RoundEnvironment roundEnvironment) {
-        for (Element element : roundEnvironment.getElementsAnnotatedWith(Test.class)) {
+        for (Element element : roundEnvironment.getElementsAnnotatedWith(Infuse.class)) {
             if (!SuperficialValidation.validateElement(element))
                 continue;
             printNote("Find a element named " + element.getClass().getSimpleName());
