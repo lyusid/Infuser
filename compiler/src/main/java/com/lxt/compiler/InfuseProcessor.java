@@ -35,7 +35,7 @@ import javax.lang.model.util.Types;
 import javax.tools.Diagnostic.Kind;
 
 @AutoService(Processor.class)
-public class JavaProcessor extends AbstractProcessor {
+public class InfuseProcessor extends AbstractProcessor {
 
     private static final String PACKAGE_NAME = "com.org.lxt.infuse";
 
