@@ -114,8 +114,8 @@ public class InfuseProcessor extends AbstractProcessor {
         Set<Modifier> modifiers = typeElement.getModifiers();
         Name objectName = typeElement.getSimpleName();
         if (modifiers.contains(Modifier.PUBLIC)) {
-            factory.addStatement("object.$N = ($T)new $T()", objectName, ClassName.get(typeElement.asType()), typeName);
-            factory.addStatement("return object.$N", typeElement.getSimpleName());
+            factory.addStatement("object.$N = ($T)new $T()", objectName, ClassName.get(typeElement.asType()), typeName)
+                    .addStatement("return object.$N", typeElement.getSimpleName());
         } else {
 //            printError("This filed should be public");
             factory.addStatement("return null");
