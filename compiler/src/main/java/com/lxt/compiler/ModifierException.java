@@ -7,7 +7,7 @@ package com.lxt.compiler;
 
 class ModifierException extends Exception {
 
-    private ModifierException(Object object) {
+    public ModifierException(Object object) {
         super(String.format("The modifier of %s should be public", object));
     }
 

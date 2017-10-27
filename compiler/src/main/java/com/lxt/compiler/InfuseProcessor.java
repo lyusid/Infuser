@@ -11,8 +11,11 @@ import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.annotation.processing.AbstractProcessor;
@@ -41,6 +44,8 @@ public class InfuseProcessor extends AbstractProcessor {
 
     private static final String METHOD_NEWINSTANCE = "bind";
 
+    private static final String PARAMA_OBJECT = "object";
+
     private Elements elements;
 
     private Filer filer;
@@ -53,6 +58,10 @@ public class InfuseProcessor extends AbstractProcessor {
 
     private Types types;
 
+    private Set<String> classFile;
+
+    private Map<String, TypeSpec.Builder> typeSpecMap;
+
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
@@ -62,6 +71,8 @@ public class InfuseProcessor extends AbstractProcessor {
         messager = processingEnvironment.getMessager();
         sourceVersion = processingEnvironment.getSourceVersion();
         types = processingEnvironment.getTypeUtils();
+        classFile = new LinkedHashSet<>();
+        typeSpecMap = new HashMap<>();
     }
 
     @Override
@@ -96,32 +107,65 @@ public class InfuseProcessor extends AbstractProcessor {
             else
                 printError("The type of target should be Filed");
         }
-
     }
 
     private void process(Element element) {
         VariableElement typeElement = (VariableElement) element;
-        TypeSpec.Builder builder = TypeSpec.classBuilder("Infuser")
+        String simpleName = typeElement.getSimpleName().toString();
+        TypeName typeName = TypeName.get(typeElement.asType());
+        Element enclosingElement = typeElement.getEnclosingElement();
+        String typeMirrorName = enclosingElement.asType().toString();
+        printNote("Enclosing Element Name = " + typeMirrorName);
+        if (classFile.contains(typeMirrorName)) {
+            TypeSpec.Builder builder = typeSpecMap.get(typeMirrorName);
+            Builder factory = MethodSpec.methodBuilder(simpleName)
+                    .addModifiers(Modifier.PUBLIC, Modifier.SYNCHRONIZED, Modifier.STATIC)
+                    .addParameter(ClassName.get(enclosingElement.asType()), PARAMA_OBJECT)
+                    .returns(typeName);
+            Set<Modifier> modifiers = typeElement.getModifiers();
+            Name objectName = typeElement.getSimpleName();
+            if (modifiers.contains(Modifier.PUBLIC)) {
+                factory.addStatement("$N.$N = ($T)new $T()", PARAMA_OBJECT, objectName,
+                        ClassName.get(typeElement.asType()), typeName)
+                        .addStatement("return $N.$N", PARAMA_OBJECT, typeElement.getSimpleName());
+            } else {
+                factory.addStatement("return null");
+                ModifierException.printException(objectName);
+            }
+            TypeSpec typeSpec = builder.addMethod(factory.build())
+                    .build();
+            JavaFile javaFile = JavaFile.builder(PACKAGE_NAME, typeSpec)
+                    .build();
+            try {
+                javaFile.writeTo(System.out);
+                javaFile.writeTo(filer);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
+        classFile.add(typeMirrorName);
+        TypeSpec.Builder typeSpecBuilder = TypeSpec.classBuilder("Infuser")
                 .addModifiers(Modifier.PUBLIC);
         JavaFile javaFile;
-        Element enclosingElement = typeElement.getEnclosingElement();
-        TypeName typeName = TypeName.get(typeElement.asType());
         printNote(typeElement.getSimpleName() + " " + typeName);
-        Builder factory = MethodSpec.methodBuilder(METHOD_NEWINSTANCE)
+        Builder factory = MethodSpec.methodBuilder(simpleName)
                 .addModifiers(Modifier.PUBLIC, Modifier.SYNCHRONIZED, Modifier.STATIC)
                 .addParameter(ClassName.get(enclosingElement.asType()), "object")
                 .returns(typeName);
+        typeSpecMap.put(typeMirrorName, typeSpecBuilder);
         Set<Modifier> modifiers = typeElement.getModifiers();
         Name objectName = typeElement.getSimpleName();
         if (modifiers.contains(Modifier.PUBLIC)) {
-            factory.addStatement("object.$N = ($T)new $T()", objectName, ClassName.get(typeElement.asType()), typeName)
-                    .addStatement("return object.$N", typeElement.getSimpleName());
+            factory.addStatement("$N.$N = ($T)new $T()", PARAMA_OBJECT, objectName,
+                    ClassName.get(typeElement.asType()), typeName)
+                    .addStatement("return $N.$N", PARAMA_OBJECT, typeElement.getSimpleName());
         } else {
 //            printError("This filed should be public");
             factory.addStatement("return null");
             ModifierException.printException(objectName);
         }
-        TypeSpec typeSpec = builder.addMethod(factory.build())
+        TypeSpec typeSpec = typeSpecBuilder.addMethod(factory.build())
                 .superclass(TypeName.get(enclosingElement.asType()))
                 .build();
         javaFile = JavaFile.builder(PACKAGE_NAME, typeSpec)
