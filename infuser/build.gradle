@@ -1,10 +1,31 @@
-apply plugin: 'java-library'
+apply plugin: 'com.android.library'
 
-def lib = rootProject.ext
-dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation lib.supportAnnotation
+android {
+    compileSdkVersion 26
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
 }
 
-sourceCompatibility = "1.7"
-targetCompatibility = "1.7"
+def lib = rootProject.ext
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation lib.supportV7
+}
