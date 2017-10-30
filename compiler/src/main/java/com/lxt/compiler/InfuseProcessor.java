@@ -42,7 +42,7 @@ public class InfuseProcessor extends AbstractProcessor {
 
     private static final String PACKAGE_NAME = "com.org.lxt.infuse";
 
-    private static final String METHOD_NEWINSTANCE = "bind";
+    private static final String METHOD_NEWINSTANCE = "build";
 
     private static final String PARAMA_OBJECT = "object";
 
@@ -107,7 +107,7 @@ public class InfuseProcessor extends AbstractProcessor {
     }
 
     private Map<TypeElement, ConstructorBinder> findElement(RoundEnvironment roundEnvironment) {
-        Map<TypeElement, ConstructorBinder> map = new LinkedHashMap<>();
+        Map<TypeElement, ConstructorBinder.Builder> map = new LinkedHashMap<>();
         Set<TypeElement> enclosingElements = new LinkedHashSet<>();
         for (Element element : roundEnvironment.getElementsAnnotatedWith(Infuse.class)) {
             if (!SuperficialValidation.validateElement(element))
@@ -116,11 +116,22 @@ public class InfuseProcessor extends AbstractProcessor {
                 parseInfuseElement(element, map, enclosingElements);
             }
         }
-        return null;
+        Map<TypeElement, ConstructorBinder> binderMap = new LinkedHashMap<>();
+        for (Entry<TypeElement, ConstructorBinder.Builder> entry : map.entrySet()) {
+            ConstructorBinder.Builder builder = entry.getValue();
+            binderMap.put(entry.getKey(), builder.build());
+        }
+        return binderMap;
     }
 
-    private void parseInfuseElement(Element element, Map<TypeElement, ConstructorBinder> map, Set<TypeElement> enclosingElements) {
-
+    private void parseInfuseElement(Element element, Map<TypeElement, ConstructorBinder.Builder> map, Set<TypeElement> enclosingElements) {
+        TypeElement enclosingElement = (TypeElement) element.getEnclosingElement();
+        String simpleName = element.getSimpleName().toString();
+        if (!map.containsKey(enclosingElement)) {
+            ConstructorBinder.Builder builder = ConstructorBinder.builder(enclosingElement, elements);
+            map.put(enclosingElement, builder);
+        }
+        enclosingElements.add(enclosingElement);
     }
 
     private Map<TypeElement, ConstructorBinder> findAndParseElement(RoundEnvironment roundEnvironment) {
@@ -132,8 +143,8 @@ public class InfuseProcessor extends AbstractProcessor {
             printNote("Find a element annotated with Infuse " + qualifiedName);
             boolean isField = element.getKind() == ElementKind.FIELD;
             if (isField)
-                process(element);
-            else
+//                process(element);
+//            else
                 printError("The type of target should be Filed");
         }
         return null;
