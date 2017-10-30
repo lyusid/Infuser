@@ -1,4 +1,4 @@
-package com.lxt.infuser;
+package com.lxt.library;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.UiThread;
@@ -6,6 +6,7 @@ import android.util.Log;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.security.acl.LastOwnerException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -27,7 +28,7 @@ public class Infuser {
         if (constructor == null)
             return Binder.BINDER_EMPTY;
         try {
-            return constructor.newInstance(clazz);
+            return constructor.newInstance(object);
         } catch (InstantiationException e) {
             e.printStackTrace();
             throw new RuntimeException("Unable to create new instance " + constructor, e);
@@ -49,6 +50,8 @@ public class Infuser {
         String clazzName = clazz.getName();
         try {
             Class<?> binderClass = clazz.getClassLoader().loadClass(clazzName + "_ConstructorBinder");
+            String binderClassName = binderClass.toString();
+            Log.d(TAG, "Binder class name " + binderClassName);
             constructor = (Constructor<? extends Binder>) binderClass.getConstructor(clazz);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
