@@ -5,6 +5,7 @@ import android.support.annotation.UiThread;
 import android.util.Log;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -25,14 +26,40 @@ public class Infuser {
         Constructor<? extends Binder> constructor = findBinderConstructorForClass(clazz);
         if (constructor == null)
             return Binder.BINDER_EMPTY;
-        return null;
+        try {
+            return constructor.newInstance(clazz);
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Unable to create new instance " + constructor, e);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Unable to create new instance " + constructor, e);
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Unable to create new instance " + constructor, e);
+        }
     }
 
     private static Constructor<? extends Binder> findBinderConstructorForClass(Class<?> clazz) {
         Constructor<? extends Binder> constructor = BINDERS.get(clazz);
         if (constructor != null) {
-            Log.d(TAG,"Cached binder in binding map.");
+            Log.d(TAG, "Cached binder in binding map.");
+            return constructor;
         }
-        return null;
+        String clazzName = clazz.getName();
+        try {
+            Class<?> binderClass = clazz.getClassLoader().loadClass(clazzName + "_ConstructorBinder");
+            constructor = (Constructor<? extends Binder>) binderClass.getConstructor(clazz);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            constructor = findBinderConstructorForClass(clazz.getSuperclass());
+            Log.e(TAG, " Search super class for constructor " + clazz.getSuperclass());
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            throw new RuntimeException("No constuctor is found", e);
+        }
+        BINDERS.put(clazz, constructor);
+        return constructor;
     }
+
 }
