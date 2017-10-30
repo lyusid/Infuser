@@ -1,0 +1,10 @@
+apply plugin: 'java-library'
+
+def lib = rootProject.ext
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation lib.supportAnnotation
+}
+
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
