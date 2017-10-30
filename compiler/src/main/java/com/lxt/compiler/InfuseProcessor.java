@@ -12,6 +12,7 @@ import com.squareup.javapoet.TypeSpec;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Locale;
 import java.util.Map;
@@ -32,7 +33,6 @@ import javax.lang.model.element.Name;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
-import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic.Kind;
@@ -90,11 +90,40 @@ public class InfuseProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
         printNote("Begin to run process");
-        findAndParseElement(roundEnvironment);
+        Map<TypeElement, ConstructorBinder> elementAndBinder = findElement(roundEnvironment);
+        for (Entry<TypeElement, ConstructorBinder> constructorBinderEntry : elementAndBinder.entrySet()) {
+            TypeElement typeElement = constructorBinderEntry.getKey();
+            ConstructorBinder constructorBinder = constructorBinderEntry.getValue();
+            JavaFile javaFile = constructorBinder.createJavaFile();
+            try {
+                javaFile.writeTo(filer);
+                javaFile.writeTo(System.out);
+            } catch (IOException e) {
+                e.printStackTrace();
+                printError(String.format("Failed to write constructor binder %s %s ", typeElement, e.getMessage()));
+            }
+        }
         return false;
     }
 
-    private void findAndParseElement(RoundEnvironment roundEnvironment) {
+    private Map<TypeElement, ConstructorBinder> findElement(RoundEnvironment roundEnvironment) {
+        Map<TypeElement, ConstructorBinder> map = new LinkedHashMap<>();
+        Set<TypeElement> enclosingElements = new LinkedHashSet<>();
+        for (Element element : roundEnvironment.getElementsAnnotatedWith(Infuse.class)) {
+            if (!SuperficialValidation.validateElement(element))
+                continue;
+            if (element.getKind() == ElementKind.FIELD) {
+                parseInfuseElement(element, map, enclosingElements);
+            }
+        }
+        return null;
+    }
+
+    private void parseInfuseElement(Element element, Map<TypeElement, ConstructorBinder> map, Set<TypeElement> enclosingElements) {
+
+    }
+
+    private Map<TypeElement, ConstructorBinder> findAndParseElement(RoundEnvironment roundEnvironment) {
         for (Element element : roundEnvironment.getElementsAnnotatedWith(Infuse.class)) {
             if (!SuperficialValidation.validateElement(element))
                 continue;
@@ -107,6 +136,7 @@ public class InfuseProcessor extends AbstractProcessor {
             else
                 printError("The type of target should be Filed");
         }
+        return null;
     }
 
     private void process(Element element) {
