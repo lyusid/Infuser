@@ -148,18 +148,6 @@ public class InfuseProcessor extends AbstractProcessor {
                 }
             }
         }
-//        for (Element element : roundEnvironment.getElementsAnnotatedWith(Infuse.class)) {
-//            if (!SuperficialValidation.validateElement(element))
-//                continue;
-//            if (element.getKind() == ElementKind.FIELD) {
-//                parseInfuseElement(element, map, enclosingElements, type);
-//            }
-//        }
-//        for (Element element : roundEnvironment.getElementsAnnotatedWith(InfuseInt.class)) {
-//            if (!SuperficialValidation.validateElement(element))
-//                continue;
-//            parseInfuseIntElement(element, map, enclosingElements);
-//        }
 
         Map<TypeElement, ConstructorBinder> binderMap = new LinkedHashMap<>();
         for (Entry<TypeElement, ConstructorBinder.Builder> entry : map.entrySet()) {
@@ -167,18 +155,6 @@ public class InfuseProcessor extends AbstractProcessor {
             binderMap.put(entry.getKey(), builder.build());
         }
         return binderMap;
-    }
-
-    private void parseInfuseIntElement(Element element, Map<TypeElement, ConstructorBinder.Builder> map, Set<TypeElement> enclosingElements) {
-        TypeElement enclosingElement = (TypeElement) element.getEnclosingElement();
-        ConstructorBinder.Builder builder = ConstructorBinder.builder(enclosingElement);
-        int[] value = element.getAnnotation(InfuseInt.class).value();
-        builder.addBinderPool(new InfuserArrayBinderPool(Type.INT, value).build(element));
-        map.put(enclosingElement, builder);
-        enclosingElements.add(enclosingElement);
-        if (!element.getModifiers().contains(Modifier.PUBLIC))
-            ModifierException.printException(element.getSimpleName().toString(), enclosingElement.getQualifiedName().toString());
-
     }
 
     private void parseInfuseElement(Element element, Map<TypeElement, ConstructorBinder.Builder> map,
