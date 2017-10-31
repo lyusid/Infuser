@@ -55,31 +55,31 @@ class InfuserArrayBinderPool extends BinderPool {
             case INT:
                 for (int i : intValues) {
                     realString.append(String.format("%s", i)).append(",");
-                    constructorString.append("Integer.class").append(",");
+                    constructorString.append("int.class").append(",");
                 }
                 break;
             case LONG:
                 for (long i : longValues) {
                     realString.append(String.format("%s", i)).append(",");
-                    constructorString.append("Long.class").append(",");
+                    constructorString.append("long.class").append(",");
                 }
                 break;
             case FLOAT:
                 for (float i : floatValues) {
                     realString.append(String.format("%s", i)).append(",");
-                    constructorString.append("Float.class").append(",");
+                    constructorString.append("float.class").append(",");
                 }
                 break;
             case DOUBLE:
                 for (double i : doubleValues) {
                     realString.append(String.format("%s", i)).append(",");
-                    constructorString.append("Double.class").append(",");
+                    constructorString.append("double.class").append(",");
                 }
                 break;
             case CHAR:
                 for (char i : charValues) {
                     realString.append(String.format("'%s'", i)).append(",");
-                    constructorString.append("Character.class").append(",");
+                    constructorString.append("char.class").append(",");
                 }
                 break;
             case STRING:
