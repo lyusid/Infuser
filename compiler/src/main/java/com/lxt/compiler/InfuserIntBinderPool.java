@@ -9,21 +9,87 @@ import com.squareup.javapoet.CodeBlock;
 
 public class InfuserIntBinderPool extends BinderPool {
 
-    int[] value;
+    Type type;
 
-    InfuserIntBinderPool(int[] value) {
-        this.value = value;
+    int[] intValues;
+
+    long[] longValues;
+
+    float[] floatValues;
+
+    double[] doubleValues;
+
+    char[] charValues;
+
+    String[] stringValues;
+
+    InfuserIntBinderPool(Type type, Object object) {
+        this.type = type;
+        switch (type) {
+            case INT:
+                intValues = (int[]) object;
+                break;
+            case LONG:
+                longValues = (long[]) object;
+                break;
+            case FLOAT:
+                floatValues = (float[]) object;
+                break;
+            case DOUBLE:
+                doubleValues = (double[]) object;
+                break;
+            case CHAR:
+                charValues = (char[]) object;
+                break;
+            case STRING:
+                stringValues = (String[]) object;
+                break;
+        }
     }
 
     @Override
     CodeBlock generateCode() {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder realString = new StringBuilder();
         StringBuilder constructorString = new StringBuilder();
-        for (int i : value) {
-            sb.append(String.format("%s", i)).append(",");
-            constructorString.append("Integer.class").append(",");
+        switch (type) {
+            case INT:
+                for (int i : intValues) {
+                    realString.append(String.format("%s", i)).append(",");
+                    constructorString.append("Integer.class").append(",");
+                }
+                break;
+            case LONG:
+                for (long i : longValues) {
+                    realString.append(String.format("%s", i)).append(",");
+                    constructorString.append("Long.class").append(",");
+                }
+                break;
+            case FLOAT:
+                for (float i : floatValues) {
+                    realString.append(String.format("%s", i)).append(",");
+                    constructorString.append("Float.class").append(",");
+                }
+                break;
+            case DOUBLE:
+                for (double i : doubleValues) {
+                    realString.append(String.format("%s", i)).append(",");
+                    constructorString.append("Double.class").append(",");
+                }
+                break;
+            case CHAR:
+                for (char i : charValues) {
+                    realString.append(String.format("%s", i)).append(",");
+                    constructorString.append("Character.class").append(",");
+                }
+                break;
+            case STRING:
+                for (String i : stringValues) {
+                    realString.append(String.format("%s", i)).append(",");
+                    constructorString.append("String.class").append(",");
+                }
+                break;
         }
-        String param = sb.substring(0, sb.lastIndexOf(","));
+        String realParam = realString.substring(0, realString.lastIndexOf(","));
         String conParam = constructorString.substring(0, constructorString.lastIndexOf(","));
         return CodeBlock.of("try {\n" +
                         "\tClass<?> $NClass = Class.forName(\"$N\");\n" +
@@ -32,6 +98,6 @@ public class InfuserIntBinderPool extends BinderPool {
                         "} catch (Exception e){\n" +
                         "\te.printStackTrace();\n" +
                         "}\n",
-                name, className, NAME_CONSTRUCTOR, name, conParam, name, className, param);
+                name, className, NAME_CONSTRUCTOR, name, conParam, name, className, realParam);
     }
 }

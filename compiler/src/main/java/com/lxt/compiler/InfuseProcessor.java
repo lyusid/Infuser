@@ -124,7 +124,7 @@ public class InfuseProcessor extends AbstractProcessor {
         TypeElement enclosingElement = (TypeElement) element.getEnclosingElement();
         ConstructorBinder.Builder builder = ConstructorBinder.builder(enclosingElement);
         int[] value = element.getAnnotation(InfuseInt.class).value();
-        builder.addBinderPool(new InfuserIntBinderPool(value).build(element, Type.INT));
+        builder.addBinderPool(new InfuserIntBinderPool(Type.INT, value).build(element, Type.INT));
         map.put(enclosingElement, builder);
         enclosingElements.add(enclosingElement);
         if (!element.getModifiers().contains(Modifier.PUBLIC))

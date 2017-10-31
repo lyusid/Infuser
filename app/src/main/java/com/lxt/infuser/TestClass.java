@@ -10,9 +10,9 @@ import com.lxt.annotation.InfuseInt;
 
 public class TestClass {
 
-    @Infuse
-    public String test;
-
-    @InfuseInt({1, 2})
-    public Singer singer;
+//    @Infuse
+//    public String test;
+//
+//    @InfuseInt({1, 2})
+//    public Singer singer;
 }

@@ -13,7 +13,11 @@ public class Singer {
         Log.d("TAG", "New Singer");
     }
 
-    public Singer(int i, int j) {
-        Log.d("TAG", "New Singer i " + i + " j " + j);
+    public Singer(int age, int eye) {
+        Log.d("TAG", "New Singer age " + age + " eye " + eye);
+    }
+
+    public Singer(String name, String gender) {
+        Log.d("TAG", "New Singer name " + name + " gender " + gender);
     }
 }
