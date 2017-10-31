@@ -5,8 +5,6 @@ import android.support.annotation.UiThread;
 import android.util.Log;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.security.acl.LastOwnerException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -29,13 +27,7 @@ public class Infuser {
             return Binder.BINDER_EMPTY;
         try {
             return constructor.newInstance(object);
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Unable to create new instance " + constructor, e);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Unable to create new instance " + constructor, e);
-        } catch (InvocationTargetException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Unable to create new instance " + constructor, e);
         }
