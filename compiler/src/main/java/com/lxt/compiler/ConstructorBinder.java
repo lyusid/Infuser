@@ -32,22 +32,19 @@ class ConstructorBinder {
 
     private ClassName className;
 
-    private String simpleName;
-
     private List<BinderPool> binderPools = new LinkedList<>();
 
     private boolean isFinal;
 
 
-    ConstructorBinder(TypeName typeName, ClassName className, String simpleName, List<BinderPool> binderPools, boolean isFinal) {
+    ConstructorBinder(TypeName typeName, ClassName className, List<BinderPool> binderPools, boolean isFinal) {
         this.typeName = typeName;
         this.className = className;
         this.binderPools = binderPools;
-        this.simpleName = simpleName;
         this.isFinal = isFinal;
     }
 
-    static Builder builder(TypeElement enclosingElement, String simpleName) {
+    static Builder builder(TypeElement enclosingElement) {
         TypeName typeName = TypeName.get(enclosingElement.asType());
         if (typeName instanceof ParameterizedTypeName) {
             typeName = ((ParameterizedTypeName) typeName).rawType;
@@ -57,7 +54,7 @@ class ConstructorBinder {
                 .substring(packageName.length() + 1).replace('.', '$');
         ClassName binderClassName = ClassName.get(packageName, className + Suffix.CONSTRUCTOR_BINDER);
         boolean isFinal = enclosingElement.getModifiers().contains(Modifier.FINAL);
-        return new Builder(typeName, binderClassName, simpleName, isFinal);
+        return new Builder(typeName, binderClassName, isFinal);
     }
 
     JavaFile createJavaFile() {
@@ -87,7 +84,7 @@ class ConstructorBinder {
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(typeName, "object");
         for (BinderPool binderPool : binderPools) {
-            builder.addCode(binderPool.generateCode(simpleName));
+            builder.addCode(binderPool.generateCode());
         }
         return builder.build();
     }
@@ -100,14 +97,11 @@ class ConstructorBinder {
 
         private ClassName className;
 
-        private String simpleName;
-
         private boolean isFinal;
 
-        Builder(TypeName typeName, ClassName className, String simpleName, boolean isFinal) {
+        Builder(TypeName typeName, ClassName className, boolean isFinal) {
             this.typeName = typeName;
             this.className = className;
-            this.simpleName = simpleName;
             this.isFinal = isFinal;
         }
 
@@ -116,7 +110,7 @@ class ConstructorBinder {
         }
 
         ConstructorBinder build() {
-            return new ConstructorBinder(typeName, className, simpleName, binderPools, isFinal);
+            return new ConstructorBinder(typeName, className, binderPools, isFinal);
         }
     }
 }

@@ -19,14 +19,9 @@ class InfuserBinderPool extends BinderPool {
      * e.printStackTrace();
      * Log.e(TAG, " Search super class for constructor " + clazz.getSuperclass());
      * }
-     *
-     * @param className
-     * @param classes
-     * @return
      */
-
     @Override
-    CodeBlock generateCode(String className, Class<?>... classes) {
+    CodeBlock generateCode() {
         return CodeBlock.of("try {\n" +
                         "\tClass<?> $NClass = Class.forName(\"$N\");\n" +
                         "\t$T<?> constructor = $NClass.getConstructor();\n" +

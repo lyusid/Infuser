@@ -3,8 +3,10 @@ package com.lxt.compiler;
 import com.google.auto.common.MoreElements;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
+import com.squareup.javapoet.TypeName;
 
 import javax.lang.model.element.Element;
+import javax.lang.model.element.VariableElement;
 
 /**
  * @author lxt <lxt352@gmail.com>
@@ -21,18 +23,24 @@ abstract class BinderPool {
 
     String packageName;
 
-    private BinderPool bindPool(String name, String packageName, Type type) {
+    String className;
+
+    private BinderPool bindPool(String name, String packageName, String className, Type type) {
         this.name = name;
         this.packageName = packageName;
         this.type = type;
+        this.className = className;
         return this;
     }
 
     BinderPool build(Element element, Type type) {
-        return bindPool(element.getSimpleName().toString(),
-                MoreElements.getPackage(element).getQualifiedName().toString(), type);
+        VariableElement variableElement = (VariableElement) element;
+        String className = TypeName.get(variableElement.asType()).toString();
+        String name = element.getSimpleName().toString();
+        String packageName = MoreElements.getPackage(element).getQualifiedName().toString();
+        return bindPool(name, packageName, className, type);
     }
 
-    abstract CodeBlock generateCode(String className, Class<?>... classes);
+    abstract CodeBlock generateCode();
 
 }
