@@ -7,7 +7,7 @@ import com.squareup.javapoet.CodeBlock;
  * @since 2017/10/31.
  */
 
- class InfuserArrayBinderPool extends BinderPool {
+class InfuserArrayBinderPool extends BinderPool {
 
     private Type type;
 
@@ -98,6 +98,8 @@ import com.squareup.javapoet.CodeBlock;
                         "} catch (Exception e){\n" +
                         "\te.printStackTrace();\n" +
                         "}\n",
-                name, className, NAME_CONSTRUCTOR, name, conParam, name, className, realParam);
+                name, className,
+                NAME_CONSTRUCTOR, name, conParam,
+                name, className, realParam);
     }
 }
