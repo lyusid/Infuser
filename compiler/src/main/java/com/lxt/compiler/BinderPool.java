@@ -30,6 +30,6 @@ abstract class BinderPool {
                 MoreElements.getPackage(element).getQualifiedName().toString(), type);
     }
 
-    abstract CodeBlock generateCode();
+    abstract CodeBlock generateCode(String className,Class<?>... classes);
 
 }

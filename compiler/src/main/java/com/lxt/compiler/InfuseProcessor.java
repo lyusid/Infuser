@@ -3,7 +3,9 @@ package com.lxt.compiler;
 import com.google.auto.common.SuperficialValidation;
 import com.google.auto.service.AutoService;
 import com.lxt.annotation.Infuse;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
 import java.io.IOException;
@@ -26,6 +28,8 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.VariableElement;
+import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic.Kind;
@@ -112,13 +116,20 @@ public class InfuseProcessor extends AbstractProcessor {
     }
 
     private void parseInfuseElement(Element element, Map<TypeElement, ConstructorBinder.Builder> map, Set<TypeElement> enclosingElements) {
+        VariableElement variableElement = (VariableElement) element;
+        String className = TypeName.get(variableElement.asType()).toString();
+        println("simple name = "+className);
         TypeElement enclosingElement = (TypeElement) element.getEnclosingElement();
-        ConstructorBinder.Builder builder = ConstructorBinder.builder(enclosingElement, elements);
+        ConstructorBinder.Builder builder = ConstructorBinder.builder(enclosingElement, className);
         builder.addBinderPool(new InfuserBinderPool().build(element, Type.EMTPY));
         map.put(enclosingElement, builder);
         enclosingElements.add(enclosingElement);
         if (!element.getModifiers().contains(Modifier.PUBLIC))
             ModifierException.printException(element.getSimpleName().toString(), enclosingElement.getQualifiedName().toString());
+    }
+
+    private void println(String message) {
+        System.out.println(message);
     }
 
     private void printNote(String message) {

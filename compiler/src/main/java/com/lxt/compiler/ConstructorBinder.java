@@ -1,5 +1,6 @@
 package com.lxt.compiler;
 
+import com.google.auto.common.MoreElements;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
@@ -13,7 +14,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.Elements;
 
 import static com.lxt.compiler.Suffix.PACKAGE_LINRARY;
 
@@ -32,29 +32,32 @@ class ConstructorBinder {
 
     private ClassName className;
 
+    private String simpleName;
+
     private List<BinderPool> binderPools = new LinkedList<>();
 
     private boolean isFinal;
 
 
-    ConstructorBinder(TypeName typeName, ClassName className, List<BinderPool> binderPools, boolean isFinal) {
+    ConstructorBinder(TypeName typeName, ClassName className, String simpleName, List<BinderPool> binderPools, boolean isFinal) {
         this.typeName = typeName;
         this.className = className;
         this.binderPools = binderPools;
+        this.simpleName = simpleName;
         this.isFinal = isFinal;
     }
 
-    static Builder builder(TypeElement enclosingElement, Elements elements) {
+    static Builder builder(TypeElement enclosingElement, String simpleName) {
         TypeName typeName = TypeName.get(enclosingElement.asType());
         if (typeName instanceof ParameterizedTypeName) {
             typeName = ((ParameterizedTypeName) typeName).rawType;
         }
-        String packageName = elements.getPackageOf(enclosingElement).getQualifiedName().toString();
+        String packageName = MoreElements.getPackage(enclosingElement).getQualifiedName().toString();
         String className = enclosingElement.getQualifiedName().toString()
                 .substring(packageName.length() + 1).replace('.', '$');
         ClassName binderClassName = ClassName.get(packageName, className + Suffix.CONSTRUCTOR_BINDER);
         boolean isFinal = enclosingElement.getModifiers().contains(Modifier.FINAL);
-        return new Builder(typeName, binderClassName, isFinal);
+        return new Builder(typeName, binderClassName, simpleName, isFinal);
     }
 
     JavaFile createJavaFile() {
@@ -84,7 +87,7 @@ class ConstructorBinder {
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(typeName, "object");
         for (BinderPool binderPool : binderPools) {
-            builder.addCode(binderPool.generateCode());
+            builder.addCode(binderPool.generateCode(simpleName));
         }
         return builder.build();
     }
@@ -97,11 +100,14 @@ class ConstructorBinder {
 
         private ClassName className;
 
+        private String simpleName;
+
         private boolean isFinal;
 
-        Builder(TypeName typeName, ClassName className, boolean isFinal) {
+        Builder(TypeName typeName, ClassName className, String simpleName, boolean isFinal) {
             this.typeName = typeName;
             this.className = className;
+            this.simpleName = simpleName;
             this.isFinal = isFinal;
         }
 
@@ -110,7 +116,7 @@ class ConstructorBinder {
         }
 
         ConstructorBinder build() {
-            return new ConstructorBinder(typeName, className, binderPools, isFinal);
+            return new ConstructorBinder(typeName, className, simpleName, binderPools, isFinal);
         }
     }
 }
