@@ -28,11 +28,12 @@ class InfuserBinderPool extends BinderPool {
     @Override
     CodeBlock generateCode(String className, Class<?>... classes) {
         return CodeBlock.of("try {\n" +
-                "Class<?> $NClass = Class.forName(\"$N\");\n" +
-                "$NClass.getConstructor();\n" +
-                "} catch (Exception e){\n" +
-                "e.printStackTrace();\n" +
-                "}\n" +
-                "object.$N = null;\n", name, className, name, name);
+                        "\tClass<?> $NClass = Class.forName(\"$N\");\n" +
+                        "\t$T<?> constructor = $NClass.getConstructor();\n" +
+                        "\tobject.$N = ($N)(constructor.newInstance());\n" +
+                        "} catch (Exception e){\n" +
+                        "\te.printStackTrace();\n" +
+                        "}\n",
+                name, className, NAME_CONSTRUCTOR, name, name, className);
     }
 }

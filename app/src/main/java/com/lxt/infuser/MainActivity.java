@@ -20,7 +20,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Infuser.bind(this);
-        Log.d("TAG", "singer = " + singer);
+        Log.d("TAG", "singer = " + singer
+                + "\n" + "singer2 = " + singer2);
     }
 
 }

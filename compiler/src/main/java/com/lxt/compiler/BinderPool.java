@@ -1,6 +1,7 @@
 package com.lxt.compiler;
 
 import com.google.auto.common.MoreElements;
+import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 
 import javax.lang.model.element.Element;
@@ -11,6 +12,8 @@ import javax.lang.model.element.Element;
  */
 
 abstract class BinderPool {
+
+    static final ClassName NAME_CONSTRUCTOR = ClassName.get("java.lang.reflect", "Constructor");
 
     Type type;
 
@@ -30,6 +33,6 @@ abstract class BinderPool {
                 MoreElements.getPackage(element).getQualifiedName().toString(), type);
     }
 
-    abstract CodeBlock generateCode(String className,Class<?>... classes);
+    abstract CodeBlock generateCode(String className, Class<?>... classes);
 
 }
