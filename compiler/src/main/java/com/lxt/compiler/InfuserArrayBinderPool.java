@@ -7,7 +7,7 @@ import com.squareup.javapoet.CodeBlock;
  * @since 2017/10/31.
  */
 
-public class InfuserIntBinderPool extends BinderPool {
+public class InfuserArrayBinderPool extends BinderPool {
 
     Type type;
 
@@ -23,7 +23,7 @@ public class InfuserIntBinderPool extends BinderPool {
 
     String[] stringValues;
 
-    InfuserIntBinderPool(Type type, Object object) {
+    InfuserArrayBinderPool(Type type, Object object) {
         this.type = type;
         switch (type) {
             case INT:

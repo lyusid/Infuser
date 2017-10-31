@@ -5,7 +5,6 @@ import com.google.auto.service.AutoService;
 import com.lxt.annotation.Infuse;
 import com.lxt.annotation.InfuseInt;
 import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
 import java.io.IOException;
@@ -28,7 +27,6 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic.Kind;
@@ -124,7 +122,7 @@ public class InfuseProcessor extends AbstractProcessor {
         TypeElement enclosingElement = (TypeElement) element.getEnclosingElement();
         ConstructorBinder.Builder builder = ConstructorBinder.builder(enclosingElement);
         int[] value = element.getAnnotation(InfuseInt.class).value();
-        builder.addBinderPool(new InfuserIntBinderPool(Type.INT, value).build(element, Type.INT));
+        builder.addBinderPool(new InfuserArrayBinderPool(Type.INT, value).build(element, Type.INT));
         map.put(enclosingElement, builder);
         enclosingElements.add(enclosingElement);
         if (!element.getModifiers().contains(Modifier.PUBLIC))
