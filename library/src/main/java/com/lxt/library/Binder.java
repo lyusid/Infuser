@@ -9,13 +9,15 @@ import android.support.annotation.UiThread;
 
 public interface Binder {
 
+    boolean bound = false;
+
     @UiThread
-    void bind();
+    boolean bind();
 
     Binder BINDER_EMPTY = new Binder() {
         @Override
-        public void bind() {
-
+        public boolean bind() {
+            return bound;
         }
     };
 }

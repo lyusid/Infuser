@@ -1,6 +1,5 @@
 package com.lxt.compiler;
 
-import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
@@ -24,6 +23,8 @@ import javax.lang.model.util.Elements;
 class ConstructorBinder {
 
     private static final ClassName MAIN_THREAD = ClassName.get("android.support.annotation", "UiThread");
+
+    private static final ClassName INTERFACE_BINDER = ClassName.get("com.lxt.library", "Binder");
 
     private TypeName typeName;
 
@@ -56,11 +57,22 @@ class ConstructorBinder {
 
     JavaFile createJavaFile() {
         TypeSpec.Builder builder = TypeSpec.classBuilder(className.simpleName())
-                .addModifiers(Modifier.PUBLIC);
+                .addModifiers(Modifier.PUBLIC)
+                .addSuperinterface(INTERFACE_BINDER);
         if (isFinal)
             builder.addModifiers(Modifier.FINAL);
-        builder.addMethod(createConstructor());
+        builder.addMethod(createConstructor())
+                .addMethod(overrideBind());
         return JavaFile.builder(className.packageName(), builder.build())
+                .build();
+    }
+
+    private MethodSpec overrideBind() {
+        return MethodSpec.methodBuilder("bind")
+                .addAnnotation(Override.class)
+                .addModifiers(Modifier.PUBLIC)
+                .returns(TypeName.BOOLEAN)
+                .addStatement("return bound")
                 .build();
     }
 
