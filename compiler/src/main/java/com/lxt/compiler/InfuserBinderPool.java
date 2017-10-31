@@ -9,17 +9,6 @@ import com.squareup.javapoet.CodeBlock;
 
 class InfuserBinderPool extends BinderPool {
 
-    /**
-     * try {
-     * Class<?> binderClass = clazz.getClassLoader().loadClass(clazzName + "_ConstructorBinder");
-     * String binderClassName = binderClass.toString();
-     * Log.d(TAG, "Binder class name " + binderClassName);
-     * constructor = (Constructor<? extends Binder>) binderClass.getConstructor(clazz);
-     * } catch (ClassNotFoundException e) {
-     * e.printStackTrace();
-     * Log.e(TAG, " Search super class for constructor " + clazz.getSuperclass());
-     * }
-     */
     @Override
     CodeBlock generateCode() {
         return CodeBlock.of("try {\n" +
