@@ -10,11 +10,9 @@ import com.lxt.annotation.InfuseInt;
 import com.lxt.annotation.InfuseLong;
 import com.lxt.annotation.InfuseString;
 import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.TypeSpec;
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Locale;
@@ -36,7 +34,6 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic.Kind;
-import javax.xml.bind.Binder;
 
 import static com.lxt.compiler.Type.CHAR;
 import static com.lxt.compiler.Type.DOUBLE;
@@ -61,10 +58,6 @@ public class InfuseProcessor extends AbstractProcessor {
 
     private Types types;
 
-    private Set<String> classFile;
-
-    private Map<String, TypeSpec.Builder> typeSpecMap;
-
     @Override
     public synchronized void init(ProcessingEnvironment processingEnvironment) {
         super.init(processingEnvironment);
@@ -74,8 +67,6 @@ public class InfuseProcessor extends AbstractProcessor {
         messager = processingEnvironment.getMessager();
         sourceVersion = processingEnvironment.getSourceVersion();
         types = processingEnvironment.getTypeUtils();
-        classFile = new LinkedHashSet<>();
-        typeSpecMap = new HashMap<>();
     }
 
     @Override
