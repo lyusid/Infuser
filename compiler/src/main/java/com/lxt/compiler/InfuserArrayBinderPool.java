@@ -7,21 +7,21 @@ import com.squareup.javapoet.CodeBlock;
  * @since 2017/10/31.
  */
 
-public class InfuserArrayBinderPool extends BinderPool {
+ class InfuserArrayBinderPool extends BinderPool {
 
-    Type type;
+    private Type type;
 
-    int[] intValues;
+    private int[] intValues;
 
-    long[] longValues;
+    private long[] longValues;
 
-    float[] floatValues;
+    private float[] floatValues;
 
-    double[] doubleValues;
+    private double[] doubleValues;
 
-    char[] charValues;
+    private char[] charValues;
 
-    String[] stringValues;
+    private String[] stringValues;
 
     InfuserArrayBinderPool(Type type, Object object) {
         this.type = type;
