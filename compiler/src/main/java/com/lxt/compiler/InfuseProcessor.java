@@ -3,6 +3,7 @@ package com.lxt.compiler;
 import com.google.auto.common.SuperficialValidation;
 import com.google.auto.service.AutoService;
 import com.lxt.annotation.Infuse;
+import com.lxt.annotation.InfuseInt;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
@@ -105,6 +106,12 @@ public class InfuseProcessor extends AbstractProcessor {
                 parseInfuseElement(element, map, enclosingElements);
             }
         }
+        for (Element element : roundEnvironment.getElementsAnnotatedWith(InfuseInt.class)) {
+            if (!SuperficialValidation.validateElement(element))
+                continue;
+            parseInfuseIntElement(element, map, enclosingElements);
+        }
+
         Map<TypeElement, ConstructorBinder> binderMap = new LinkedHashMap<>();
         for (Entry<TypeElement, ConstructorBinder.Builder> entry : map.entrySet()) {
             ConstructorBinder.Builder builder = entry.getValue();
@@ -113,10 +120,19 @@ public class InfuseProcessor extends AbstractProcessor {
         return binderMap;
     }
 
+    private void parseInfuseIntElement(Element element, Map<TypeElement, ConstructorBinder.Builder> map, Set<TypeElement> enclosingElements) {
+        TypeElement enclosingElement = (TypeElement) element.getEnclosingElement();
+        ConstructorBinder.Builder builder = ConstructorBinder.builder(enclosingElement);
+        int[] value = element.getAnnotation(InfuseInt.class).value();
+        builder.addBinderPool(new InfuserIntBinderPool(value).build(element, Type.INT));
+        map.put(enclosingElement, builder);
+        enclosingElements.add(enclosingElement);
+        if (!element.getModifiers().contains(Modifier.PUBLIC))
+            ModifierException.printException(element.getSimpleName().toString(), enclosingElement.getQualifiedName().toString());
+
+    }
+
     private void parseInfuseElement(Element element, Map<TypeElement, ConstructorBinder.Builder> map, Set<TypeElement> enclosingElements) {
-        VariableElement variableElement = (VariableElement) element;
-        String className = TypeName.get(variableElement.asType()).toString();
-        println("simple name = "+className);
         TypeElement enclosingElement = (TypeElement) element.getEnclosingElement();
         ConstructorBinder.Builder builder = ConstructorBinder.builder(enclosingElement);
         builder.addBinderPool(new InfuserBinderPool().build(element, Type.EMTPY));

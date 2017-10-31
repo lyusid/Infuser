@@ -14,5 +14,4 @@ enum Type {
     DOUBLE,
     CHAR,
     STRING,
-    CLASS
 }
