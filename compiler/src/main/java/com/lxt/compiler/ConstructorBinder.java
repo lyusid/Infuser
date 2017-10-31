@@ -2,6 +2,7 @@ package com.lxt.compiler;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
+import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
@@ -16,6 +17,8 @@ import javax.lang.model.util.Elements;
  */
 
 class ConstructorBinder {
+
+    private static final ClassName MAIN_THREAD = ClassName.get("android.support.annotation", "UiThread");
 
     private TypeName typeName;
 
@@ -47,8 +50,19 @@ class ConstructorBinder {
                 .addModifiers(Modifier.PUBLIC);
         if (isFinal)
             builder.addModifiers(Modifier.FINAL);
+        builder.addMethod(createConstructor());
         return JavaFile.builder(className.packageName(), builder.build())
                 .build();
+    }
+
+    private MethodSpec createConstructor() {
+        MethodSpec.Builder builder = MethodSpec.constructorBuilder()
+                .addAnnotation(MAIN_THREAD)
+                .addModifiers(Modifier.PUBLIC);
+
+        builder.addParameter(typeName, "object");
+
+        return builder.build();
     }
 
     static class Builder {

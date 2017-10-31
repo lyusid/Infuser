@@ -29,6 +29,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile lib.supportV7
+    compile lib.supportAnnotation
     testCompile 'junit:junit:4.12'
     compile project(':annotation')
     annotationProcessor project(':compiler')
