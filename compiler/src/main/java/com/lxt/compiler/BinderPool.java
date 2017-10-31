@@ -17,7 +17,7 @@ abstract class BinderPool {
 
     static final ClassName NAME_CONSTRUCTOR = ClassName.get("java.lang.reflect", "Constructor");
 
-    Type type;
+    Type type = Type.EMTPY;
 
     String name;
 
@@ -33,7 +33,7 @@ abstract class BinderPool {
         return this;
     }
 
-    BinderPool build(Element element, Type type) {
+    BinderPool build(Element element) {
         VariableElement variableElement = (VariableElement) element;
         String className = TypeName.get(variableElement.asType()).toString();
         String name = element.getSimpleName().toString();

@@ -3,11 +3,17 @@ package com.lxt.compiler;
 import com.google.auto.common.SuperficialValidation;
 import com.google.auto.service.AutoService;
 import com.lxt.annotation.Infuse;
+import com.lxt.annotation.InfuseChar;
+import com.lxt.annotation.InfuseDouble;
+import com.lxt.annotation.InfuseFloat;
 import com.lxt.annotation.InfuseInt;
+import com.lxt.annotation.InfuseLong;
+import com.lxt.annotation.InfuseString;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -30,6 +36,15 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
 import javax.tools.Diagnostic.Kind;
+import javax.xml.bind.Binder;
+
+import static com.lxt.compiler.Type.CHAR;
+import static com.lxt.compiler.Type.DOUBLE;
+import static com.lxt.compiler.Type.EMTPY;
+import static com.lxt.compiler.Type.FLOAT;
+import static com.lxt.compiler.Type.INT;
+import static com.lxt.compiler.Type.LONG;
+import static com.lxt.compiler.Type.STRING;
 
 @AutoService(Processor.class)
 public class InfuseProcessor extends AbstractProcessor {
@@ -66,8 +81,22 @@ public class InfuseProcessor extends AbstractProcessor {
     @Override
     public Set<String> getSupportedAnnotationTypes() {
         Set<String> types = new LinkedHashSet<>();
-        types.add(Infuse.class.getCanonicalName());
+        for (Class aClass : getAnnotationClass()) {
+            types.add(aClass.getCanonicalName());
+        }
         return types;
+    }
+
+    private Set<Class<? extends Annotation>> getAnnotationClass() {
+        Set<Class<? extends Annotation>> classes = new LinkedHashSet<>();
+        classes.add(Infuse.class);
+        classes.add(InfuseInt.class);
+        classes.add(InfuseLong.class);
+        classes.add(InfuseChar.class);
+        classes.add(InfuseString.class);
+        classes.add(InfuseDouble.class);
+        classes.add(InfuseFloat.class);
+        return classes;
     }
 
     @Override
@@ -97,18 +126,40 @@ public class InfuseProcessor extends AbstractProcessor {
     private Map<TypeElement, ConstructorBinder> findElement(RoundEnvironment roundEnvironment) {
         Map<TypeElement, ConstructorBinder.Builder> map = new LinkedHashMap<>();
         Set<TypeElement> enclosingElements = new LinkedHashSet<>();
-        for (Element element : roundEnvironment.getElementsAnnotatedWith(Infuse.class)) {
-            if (!SuperficialValidation.validateElement(element))
-                continue;
-            if (element.getKind() == ElementKind.FIELD) {
-                parseInfuseElement(element, map, enclosingElements);
+        for (Class<? extends Annotation> aClass : getAnnotationClass()) {
+            for (Element element : roundEnvironment.getElementsAnnotatedWith(aClass)) {
+                if (!SuperficialValidation.validateElement(element))
+                    continue;
+                Type type = EMTPY;
+                if (aClass.equals(InfuseInt.class))
+                    type = INT;
+                if (aClass.equals(InfuseLong.class))
+                    type = LONG;
+                if (aClass.equals(InfuseChar.class))
+                    type = CHAR;
+                if (aClass.equals(InfuseString.class))
+                    type = STRING;
+                if (aClass.equals(InfuseFloat.class))
+                    type = FLOAT;
+                if (aClass.equals(InfuseDouble.class))
+                    type = DOUBLE;
+                if (element.getKind() == ElementKind.FIELD) {
+                    parseInfuseElement(element, map, enclosingElements, type, aClass);
+                }
             }
         }
-        for (Element element : roundEnvironment.getElementsAnnotatedWith(InfuseInt.class)) {
-            if (!SuperficialValidation.validateElement(element))
-                continue;
-            parseInfuseIntElement(element, map, enclosingElements);
-        }
+//        for (Element element : roundEnvironment.getElementsAnnotatedWith(Infuse.class)) {
+//            if (!SuperficialValidation.validateElement(element))
+//                continue;
+//            if (element.getKind() == ElementKind.FIELD) {
+//                parseInfuseElement(element, map, enclosingElements, type);
+//            }
+//        }
+//        for (Element element : roundEnvironment.getElementsAnnotatedWith(InfuseInt.class)) {
+//            if (!SuperficialValidation.validateElement(element))
+//                continue;
+//            parseInfuseIntElement(element, map, enclosingElements);
+//        }
 
         Map<TypeElement, ConstructorBinder> binderMap = new LinkedHashMap<>();
         for (Entry<TypeElement, ConstructorBinder.Builder> entry : map.entrySet()) {
@@ -122,7 +173,7 @@ public class InfuseProcessor extends AbstractProcessor {
         TypeElement enclosingElement = (TypeElement) element.getEnclosingElement();
         ConstructorBinder.Builder builder = ConstructorBinder.builder(enclosingElement);
         int[] value = element.getAnnotation(InfuseInt.class).value();
-        builder.addBinderPool(new InfuserArrayBinderPool(Type.INT, value).build(element, Type.INT));
+        builder.addBinderPool(new InfuserArrayBinderPool(Type.INT, value).build(element));
         map.put(enclosingElement, builder);
         enclosingElements.add(enclosingElement);
         if (!element.getModifiers().contains(Modifier.PUBLIC))
@@ -130,10 +181,38 @@ public class InfuseProcessor extends AbstractProcessor {
 
     }
 
-    private void parseInfuseElement(Element element, Map<TypeElement, ConstructorBinder.Builder> map, Set<TypeElement> enclosingElements) {
+    private void parseInfuseElement(Element element, Map<TypeElement, ConstructorBinder.Builder> map,
+                                    Set<TypeElement> enclosingElements, Type type, Class<? extends Annotation> aClass) {
         TypeElement enclosingElement = (TypeElement) element.getEnclosingElement();
         ConstructorBinder.Builder builder = ConstructorBinder.builder(enclosingElement);
-        builder.addBinderPool(new InfuserBinderPool().build(element, Type.EMTPY));
+        BinderPool pool;
+        Object value = null;
+        if (type == EMTPY) {
+            pool = new InfuserBinderPool().build(element);
+        } else {
+            switch (type) {
+                case INT:
+                    value = element.getAnnotation(InfuseInt.class).value();
+                    break;
+                case LONG:
+                    value = element.getAnnotation(InfuseLong.class).value();
+                    break;
+                case CHAR:
+                    value = element.getAnnotation(InfuseChar.class).value();
+                    break;
+                case STRING:
+                    value = element.getAnnotation(InfuseString.class).value();
+                    break;
+                case FLOAT:
+                    value = element.getAnnotation(InfuseFloat.class).value();
+                    break;
+                case DOUBLE:
+                    value = element.getAnnotation(InfuseDouble.class).value();
+                    break;
+            }
+            pool = new InfuserArrayBinderPool(type, value).build(element);
+        }
+        builder.addBinderPool(pool);
         map.put(enclosingElement, builder);
         enclosingElements.add(enclosingElement);
         if (!element.getModifiers().contains(Modifier.PUBLIC))

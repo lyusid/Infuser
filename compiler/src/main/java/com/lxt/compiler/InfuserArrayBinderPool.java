@@ -78,13 +78,13 @@ class InfuserArrayBinderPool extends BinderPool {
                 break;
             case CHAR:
                 for (char i : charValues) {
-                    realString.append(String.format("%s", i)).append(",");
+                    realString.append(String.format("'%s'", i)).append(",");
                     constructorString.append("Character.class").append(",");
                 }
                 break;
             case STRING:
                 for (String i : stringValues) {
-                    realString.append(String.format("%s", i)).append(",");
+                    realString.append(String.format("\"%s\"", i)).append(",");
                     constructorString.append("String.class").append(",");
                 }
                 break;
