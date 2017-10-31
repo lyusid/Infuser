@@ -13,7 +13,7 @@ public class MainActivity extends AppCompatActivity {
     public Singer singer;
 
     @Infuse
-    private Singer singer2;
+    public Singer singer2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

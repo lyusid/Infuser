@@ -7,7 +7,7 @@ import com.squareup.javapoet.CodeBlock;
  * @since 2017/10/31.
  */
 
-public class InfuserBinderPool extends BinderPool {
+class InfuserBinderPool extends BinderPool {
 
     @Override
     CodeBlock generateCode() {

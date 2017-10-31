@@ -126,12 +126,11 @@ public class InfuseProcessor extends AbstractProcessor {
 
     private void parseInfuseElement(Element element, Map<TypeElement, ConstructorBinder.Builder> map, Set<TypeElement> enclosingElements) {
         TypeElement enclosingElement = (TypeElement) element.getEnclosingElement();
-        String simpleName = element.getSimpleName().toString();
-        if (!map.containsKey(enclosingElement)) {
-            ConstructorBinder.Builder builder = ConstructorBinder.builder(enclosingElement, elements);
-            builder.addBinderPool(new InfuserBinderPool().build(element, Type.EMTPY));
-            map.put(enclosingElement, builder);
-        }
+//        if (!map.containsKey(enclosingElement)) {
+        ConstructorBinder.Builder builder = ConstructorBinder.builder(enclosingElement, elements);
+        builder.addBinderPool(new InfuserBinderPool().build(element, Type.EMTPY));
+        map.put(enclosingElement, builder);
+//        }
         enclosingElements.add(enclosingElement);
     }
 

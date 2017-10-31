@@ -8,6 +8,7 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -28,15 +29,15 @@ class ConstructorBinder {
 
     private ClassName className;
 
-    private List<BinderPool> binderPools;
+    private List<BinderPool> binderPools = new LinkedList<>();
 
     private boolean isFinal;
 
 
-    ConstructorBinder(TypeName typeName, ClassName className, List<BinderPool> pools, boolean isFinal) {
+    ConstructorBinder(TypeName typeName, ClassName className, List<BinderPool> binderPools, boolean isFinal) {
         this.typeName = typeName;
         this.className = className;
-        this.binderPools = pools;
+        this.binderPools = binderPools;
         this.isFinal = isFinal;
     }
 
@@ -76,7 +77,7 @@ class ConstructorBinder {
 
     static class Builder {
 
-        private List<BinderPool> binderPools = new CopyOnWriteArrayList<>();
+        private static List<BinderPool> binderPools = new CopyOnWriteArrayList<>();
 
         private TypeName typeName;
 
