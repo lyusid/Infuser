@@ -129,6 +129,7 @@ public class InfuseProcessor extends AbstractProcessor {
         String simpleName = element.getSimpleName().toString();
         if (!map.containsKey(enclosingElement)) {
             ConstructorBinder.Builder builder = ConstructorBinder.builder(enclosingElement, elements);
+            builder.addBinderPool(new InfuserBinderPool().build(element, Type.EMTPY));
             map.put(enclosingElement, builder);
         }
         enclosingElements.add(enclosingElement);

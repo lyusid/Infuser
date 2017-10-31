@@ -1,11 +1,15 @@
 package com.lxt.compiler;
 
+import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -24,11 +28,15 @@ class ConstructorBinder {
 
     private ClassName className;
 
+    private List<BinderPool> binderPools;
+
     private boolean isFinal;
 
-    ConstructorBinder(TypeName typeName, ClassName className, boolean isFinal) {
+
+    ConstructorBinder(TypeName typeName, ClassName className, List<BinderPool> pools, boolean isFinal) {
         this.typeName = typeName;
         this.className = className;
+        this.binderPools = pools;
         this.isFinal = isFinal;
     }
 
@@ -58,14 +66,17 @@ class ConstructorBinder {
     private MethodSpec createConstructor() {
         MethodSpec.Builder builder = MethodSpec.constructorBuilder()
                 .addAnnotation(MAIN_THREAD)
-                .addModifiers(Modifier.PUBLIC);
-
-        builder.addParameter(typeName, "object");
-
+                .addModifiers(Modifier.PUBLIC)
+                .addParameter(typeName, "object");
+        for (BinderPool binderPool : binderPools) {
+            builder.addCode(binderPool.generateCode());
+        }
         return builder.build();
     }
 
     static class Builder {
+
+        private List<BinderPool> binderPools = new CopyOnWriteArrayList<>();
 
         private TypeName typeName;
 
@@ -79,8 +90,12 @@ class ConstructorBinder {
             this.isFinal = isFinal;
         }
 
+        void addBinderPool(BinderPool binderPool) {
+            binderPools.add(binderPool);
+        }
+
         ConstructorBinder build() {
-            return new ConstructorBinder(typeName, className, isFinal);
+            return new ConstructorBinder(typeName, className, binderPools, isFinal);
         }
     }
 }

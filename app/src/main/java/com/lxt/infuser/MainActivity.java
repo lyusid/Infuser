@@ -10,7 +10,7 @@ import com.lxt.library.Infuser;
 public class MainActivity extends AppCompatActivity {
 
     @Infuse
-    private Singer singer;
+    public Singer singer;
 
     @Infuse
     private Singer singer2;
