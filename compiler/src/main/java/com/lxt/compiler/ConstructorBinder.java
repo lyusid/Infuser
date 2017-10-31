@@ -15,6 +15,8 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 
+import static com.lxt.compiler.Suffix.PACKAGE_LINRARY;
+
 /**
  * @author lxt <lxt352@gmail.com>
  * @since 2017/10/30.
@@ -24,7 +26,7 @@ class ConstructorBinder {
 
     private static final ClassName MAIN_THREAD = ClassName.get("android.support.annotation", "UiThread");
 
-    private static final ClassName INTERFACE_BINDER = ClassName.get("com.lxt.library", "Binder");
+    private static final ClassName INTERFACE_BINDER = ClassName.get(PACKAGE_LINRARY, "Binder");
 
     private TypeName typeName;
 

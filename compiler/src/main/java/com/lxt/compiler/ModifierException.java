@@ -5,13 +5,13 @@ package com.lxt.compiler;
  * @since 2017/10/26
  */
 
-class ModifierException extends Exception {
+class ModifierException extends RuntimeException {
 
-    public ModifierException(Object object) {
-        super(String.format("The modifier of %s should be public", object));
+    ModifierException(Object object, String className) {
+        super(String.format("The modifier of %s in %s should be public", object, className));
     }
 
-    static void printException(Object object) {
-        new ModifierException(object).printStackTrace();
+    static void printException(Object object, String className) {
+        throw new ModifierException(object, className);
     }
 }

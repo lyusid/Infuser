@@ -126,12 +126,12 @@ public class InfuseProcessor extends AbstractProcessor {
 
     private void parseInfuseElement(Element element, Map<TypeElement, ConstructorBinder.Builder> map, Set<TypeElement> enclosingElements) {
         TypeElement enclosingElement = (TypeElement) element.getEnclosingElement();
-//        if (!map.containsKey(enclosingElement)) {
         ConstructorBinder.Builder builder = ConstructorBinder.builder(enclosingElement, elements);
         builder.addBinderPool(new InfuserBinderPool().build(element, Type.EMTPY));
         map.put(enclosingElement, builder);
-//        }
         enclosingElements.add(enclosingElement);
+        if (!element.getModifiers().contains(Modifier.PUBLIC))
+            ModifierException.printException(element.getSimpleName().toString(), enclosingElement.getQualifiedName().toString());
     }
 
     private Map<TypeElement, ConstructorBinder> findAndParseElement(RoundEnvironment roundEnvironment) {
@@ -171,7 +171,6 @@ public class InfuseProcessor extends AbstractProcessor {
                         .addStatement("return $N.$N", PARAMA_OBJECT, typeElement.getSimpleName());
             } else {
                 factory.addStatement("return null");
-                ModifierException.printException(objectName);
             }
             TypeSpec typeSpec = builder.addMethod(factory.build())
                     .build();
@@ -204,7 +203,6 @@ public class InfuseProcessor extends AbstractProcessor {
         } else {
 //            printError("This filed should be public");
             factory.addStatement("return null");
-            ModifierException.printException(objectName);
         }
         TypeSpec typeSpec = typeSpecBuilder.addMethod(factory.build())
                 .superclass(TypeName.get(enclosingElement.asType()))

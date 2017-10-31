@@ -5,7 +5,9 @@ package com.lxt.compiler;
  * @since 2017/10/30.
  */
 
-public class Suffix {
+ class Suffix {
 
-    public static final String CONSTRUCTOR_BINDER = "_ConstructorBinder";
+     static final String CONSTRUCTOR_BINDER = "_ConstructorBinder";
+
+     static final String PACKAGE_LINRARY = "com.lxt.library";
 }
