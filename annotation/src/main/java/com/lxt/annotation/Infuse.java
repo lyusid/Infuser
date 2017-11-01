@@ -6,8 +6,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * @author lxt <lxt352@gmail.com>
- * @since 2017/10/26
  */
 
 @Target(ElementType.FIELD)
