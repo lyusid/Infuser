@@ -28,4 +28,4 @@ class MainActivity extends Activity{
        }
 }
 ```
-Yes,Infuser is sharper that ButterKnife and Dagger.
+Yes,Infuser is sharper than ButterKnife and Dagger.
