@@ -10,11 +10,14 @@ and is easily customized.
 ```java
 class MainActivity extends Activity{
 
-      @BindString("Dancer Kitty")
+      @InfuseString("Dancer Kitty")
       public String name;
 
-      @BindInt({18,180})
-      public Singer singer;
+      @Infuse
+      public Singer singer1;
+
+      @InfuseInt({18,180})
+      public Singer singer2;
 
       @Override
       public void onCreate(Bundle savedInstanceState){
@@ -24,5 +27,5 @@ class MainActivity extends Activity{
        .....
        }
 }
-
+```
 Yes,Infuser is sharper that ButterKnife and Dagger.
