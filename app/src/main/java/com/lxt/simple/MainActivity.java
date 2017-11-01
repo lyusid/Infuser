@@ -1,8 +1,7 @@
-package com.lxt.infuser;
+package com.lxt.simple;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.lxt.annotation.Infuse;
 import com.lxt.annotation.InfuseChar;
@@ -11,7 +10,7 @@ import com.lxt.annotation.InfuseFloat;
 import com.lxt.annotation.InfuseInt;
 import com.lxt.annotation.InfuseLong;
 import com.lxt.annotation.InfuseString;
-import com.lxt.library.Infuser;
+import com.lxt.infuser.Infuser;
 
 public class MainActivity extends AppCompatActivity {
 

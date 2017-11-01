@@ -1,4 +1,4 @@
-package com.lxt.library;
+package com.lxt.infuser;
 
 import android.support.annotation.UiThread;
 

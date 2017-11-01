@@ -1,4 +1,4 @@
-package com.lxt.infuser;
+package com.lxt.simple;
 
 import android.util.Log;
 

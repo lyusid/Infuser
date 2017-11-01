@@ -9,5 +9,5 @@ package com.lxt.compiler;
 
      static final String CONSTRUCTOR_BINDER = "_ConstructorBinder";
 
-     static final String PACKAGE_LINRARY = "com.lxt.library";
+     static final String PACKAGE_LINRARY = "com.lxt.infuser";
 }

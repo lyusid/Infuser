@@ -1,4 +1,4 @@
-package com.lxt.library;
+package com.lxt.simple;
 
 import org.junit.Test;
 
