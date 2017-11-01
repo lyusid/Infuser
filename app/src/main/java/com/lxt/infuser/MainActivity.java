@@ -45,9 +45,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Infuser.bind(this);
+        new InnerClass();
     }
 
-    public static class InnerClass {
+    class InnerClass {
 
         @InfuseString({"Ivy", "girl"})
         public Singer singer9;
