@@ -18,6 +18,8 @@ install {
         pom {
             project {
                 packaging 'jar'
+                groupId 'com.lure'
+                artifactId 'infuser'
                 name 'infuser annotation'
                 url siteUrl
                 licenses {
@@ -77,12 +79,13 @@ artifacts {
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 bintray {
-    user = "lxt352"
-    key = "0ccd80dd902e8b56bd36be4661e29acbef492e2d"
+    user = "lxt318"
+    key = "544acb1991293f6d946dee2d52082f5c69c8b92f"
     configurations = ['archives']
     pkg {
         repo = "infuser"
         name = "annotation"
+//        userOrg = "freecoder"
         websiteUrl = dep.siteUrl
         vcsUrl = dep.gitUrl
         licenses = ["Apache-2.0"]
