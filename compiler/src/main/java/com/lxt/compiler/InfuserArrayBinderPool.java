@@ -60,7 +60,7 @@ class InfuserArrayBinderPool extends BinderPool {
                 break;
             case LONG:
                 for (long i : longValues) {
-                    realString.append(String.format("%s", i)).append(",");
+                    realString.append(String.format("%sL", i)).append(",");
                     constructorString.append("long.class").append(",");
                 }
                 break;
