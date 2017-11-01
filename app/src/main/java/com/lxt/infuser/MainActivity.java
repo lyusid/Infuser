@@ -47,4 +47,13 @@ public class MainActivity extends AppCompatActivity {
         Infuser.bind(this);
     }
 
+    public static class InnerClass {
+
+        @InfuseString({"Ivy", "girl"})
+        public Singer singer9;
+
+        InnerClass() {
+            Infuser.bind(this);
+        }
+    }
 }

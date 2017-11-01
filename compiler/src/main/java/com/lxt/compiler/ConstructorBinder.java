@@ -8,9 +8,9 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
@@ -32,15 +32,14 @@ class ConstructorBinder {
 
     private ClassName className;
 
-    private List<BinderPool> binderPools = new LinkedList<>();
+    private Map<BinderPool, ClassName> binderPoolMap = new HashMap<>();
 
     private boolean isFinal;
 
-
-    ConstructorBinder(TypeName typeName, ClassName className, List<BinderPool> binderPools, boolean isFinal) {
+    ConstructorBinder(Map<BinderPool, ClassName> map, TypeName typeName, ClassName className, boolean isFinal) {
+        this.binderPoolMap = map;
         this.typeName = typeName;
         this.className = className;
-        this.binderPools = binderPools;
         this.isFinal = isFinal;
     }
 
@@ -83,15 +82,18 @@ class ConstructorBinder {
                 .addAnnotation(MAIN_THREAD)
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(typeName, "object");
-        for (BinderPool binderPool : binderPools) {
-            builder.addCode(binderPool.generateCode());
+        Set<Map.Entry<BinderPool, ClassName>> entries = binderPoolMap.entrySet();
+        for (Map.Entry<BinderPool, ClassName> entry : entries) {
+            ClassName value = entry.getValue();
+            if (value.equals(className))
+                builder.addCode(entry.getKey().generateCode());
         }
         return builder.build();
     }
 
     static class Builder {
 
-        private static List<BinderPool> binderPools = new CopyOnWriteArrayList<>();
+        private static Map<BinderPool, ClassName> binderPoolMap = new HashMap<>();
 
         private TypeName typeName;
 
@@ -106,11 +108,11 @@ class ConstructorBinder {
         }
 
         void addBinderPool(BinderPool binderPool) {
-            binderPools.add(binderPool);
+            binderPoolMap.put(binderPool, className);
         }
 
         ConstructorBinder build() {
-            return new ConstructorBinder(typeName, className, binderPools, isFinal);
+            return new ConstructorBinder(binderPoolMap, typeName, className, isFinal);
         }
     }
 }
