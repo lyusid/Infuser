@@ -26,14 +26,14 @@ android {
 def lib = rootProject.ext
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile lib.supportV7
-    compile lib.supportAnnotation
-    testCompile 'junit:junit:4.12'
-    compile project(':annotation')
+    implementation lib.supportV7
+    implementation lib.supportAnnotation
+    testImplementation 'junit:junit:4.12'
+    implementation project(':annotation')
     annotationProcessor project(':compiler')
 }
 
