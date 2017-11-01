@@ -66,7 +66,7 @@ class InfuserArrayBinderPool extends BinderPool {
                 break;
             case FLOAT:
                 for (float i : floatValues) {
-                    realString.append(String.format("%s", i)).append(",");
+                    realString.append(String.format("%sf", i)).append(",");
                     constructorString.append("float.class").append(",");
                 }
                 break;
