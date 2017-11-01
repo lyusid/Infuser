@@ -117,25 +117,25 @@ public class InfuseProcessor extends AbstractProcessor {
     private Map<TypeElement, ConstructorBinder> findElement(RoundEnvironment roundEnvironment) {
         Map<TypeElement, ConstructorBinder.Builder> map = new LinkedHashMap<>();
         Set<TypeElement> enclosingElements = new LinkedHashSet<>();
-        for (Class<? extends Annotation> aClass : getAnnotationClass()) {
-            for (Element element : roundEnvironment.getElementsAnnotatedWith(aClass)) {
+        for (Class<? extends Annotation> clazz : getAnnotationClass()) {
+            for (Element element : roundEnvironment.getElementsAnnotatedWith(clazz)) {
                 if (!SuperficialValidation.validateElement(element))
                     continue;
                 Type type = EMTPY;
-                if (aClass.equals(InfuseInt.class))
+                if (clazz.equals(InfuseInt.class))
                     type = INT;
-                if (aClass.equals(InfuseLong.class))
+                if (clazz.equals(InfuseLong.class))
                     type = LONG;
-                if (aClass.equals(InfuseChar.class))
+                if (clazz.equals(InfuseChar.class))
                     type = CHAR;
-                if (aClass.equals(InfuseString.class))
+                if (clazz.equals(InfuseString.class))
                     type = STRING;
-                if (aClass.equals(InfuseFloat.class))
+                if (clazz.equals(InfuseFloat.class))
                     type = FLOAT;
-                if (aClass.equals(InfuseDouble.class))
+                if (clazz.equals(InfuseDouble.class))
                     type = DOUBLE;
                 if (element.getKind() == ElementKind.FIELD) {
-                    parseInfuseElement(element, map, enclosingElements, type, aClass);
+                    parseInfuseElement(element, map, enclosingElements, type);
                 }
             }
         }
@@ -149,7 +149,7 @@ public class InfuseProcessor extends AbstractProcessor {
     }
 
     private void parseInfuseElement(Element element, Map<TypeElement, ConstructorBinder.Builder> map,
-                                    Set<TypeElement> enclosingElements, Type type, Class<? extends Annotation> aClass) {
+                                    Set<TypeElement> enclosingElements, Type type) {
         TypeElement enclosingElement = (TypeElement) element.getEnclosingElement();
         ConstructorBinder.Builder builder = ConstructorBinder.builder(enclosingElement);
         BinderPool pool;
