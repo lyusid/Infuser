@@ -3,7 +3,6 @@ package com.lxt.infuser;
 import android.support.annotation.UiThread;
 
 /**
- * @author lxt <lxt352@gmail.com>
  * @since 2017/10/30.
  */
 
