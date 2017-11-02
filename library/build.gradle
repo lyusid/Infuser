@@ -34,7 +34,7 @@ dependencies {
     implementation lib.supportAnnotation
     api lib.infuserAnnotation
     testImplementation 'junit:junit:4.12'
-    annotationProcessor project(':compiler')
+    annotationProcessor 'com.lure.infuser:compiler:1.0.0'
 }
 
 
