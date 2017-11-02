@@ -7,15 +7,18 @@ ext {
 
     versions = [
 
+            infuserVersion: '1.0.0',
             supportVersion: '26.+'
     ]
 
     libraryVersion = '1.0.0'
     groupId = "com.lure.infuser"
+
     siteUrl                 = "https://github.com/lxt352/Infuser"
     gitUrl                  = "https://github.com/lxt352/Infuser.git"
 
     supportAnnotation       = "com.android.support:support-annotations:${versions.supportVersion}"
     supportV7               = "com.android.support:appcompat-v7:${versions.supportVersion}"
 
+    infuserAnnotation       = "com.lure.infuser:annotation:${versions.infuserVersion}"
 }
