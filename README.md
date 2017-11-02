@@ -34,18 +34,18 @@ Library projects
 ----------------
 To use Infuser in a library,add the plugin to your repositories:
 ```groovy
- repositories {
-        maven {
-            url "https://dl.bintray.com/lxt318/infuser"
-        }
-    }
+repositories {
+      maven {
+           url "https://dl.bintray.com/lxt318/infuser"
+      }
+}
 ```
 
 and then apply it in your module:
 ```groovy
-    implementation 'com.lure.infuser:library:1.0.0'
-    api 'com.lure.infuser:annotation:1.0.0'
-    annotationProcessor 'com.lure.infuser:compiler:1.0.0'
+implementation 'com.lure.infuser:library:1.0.0'
+api 'com.lure.infuser:annotation:1.0.0'
+annotationProcessor 'com.lure.infuser:compiler:1.0.0'
 ```
 
 License
