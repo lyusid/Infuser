@@ -42,6 +42,15 @@ repositories {
 ```
 
 and then apply it in your module:
+
+android studio before 3.0
+```groovy
+compile 'com.lure.infuser:library:1.0.0'
+compile 'com.lure.infuser:annotation:1.0.0'
+annotationProcessor 'com.lure.infuser:compiler:1.0.0'
+```
+
+android studio after 3.0
 ```groovy
 implementation 'com.lure.infuser:library:1.0.0'
 api 'com.lure.infuser:annotation:1.0.0'
