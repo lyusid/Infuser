@@ -12,14 +12,14 @@ targetCompatibility = rootProject.ext.targetCompatibility
 
 def dep = rootProject.ext
 version = dep.libraryVersion
+group = dep.groupId
+
 
 install {
     repositories.mavenInstaller {
         pom {
             project {
                 packaging 'jar'
-                groupId 'com.lure'
-                artifactId 'infuser'
                 name 'infuser annotation'
                 url siteUrl
                 licenses {
@@ -79,8 +79,8 @@ artifacts {
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 bintray {
-    user = "lxt318"
-    key = "544acb1991293f6d946dee2d52082f5c69c8b92f"
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
     configurations = ['archives']
     pkg {
         repo = "infuser"

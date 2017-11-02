@@ -11,6 +11,7 @@ ext {
     ]
 
     libraryVersion = '1.0.0'
+    groupId = "com.lure.infuser"
     siteUrl                 = "https://github.com/lxt352/Infuser"
     gitUrl                  = "https://github.com/lxt352/Infuser.git"
 
