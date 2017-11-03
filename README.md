@@ -32,25 +32,16 @@ Yes,Infuser is sharper than ButterKnife and Dagger.
 
 Library projects
 ----------------
-To use Infuser in a library,add the plugin to your repositories:
-```groovy
-repositories {
-      maven {
-           url "https://dl.bintray.com/lxt318/infuser"
-      }
-}
-```
+To use Infuser in a library,apply it in your module:
 
-and then apply it in your module:
-
-android studio before 3.0
+* before 3.0
 ```groovy
 compile 'com.lure.infuser:library:1.0.0'
 compile 'com.lure.infuser:annotation:1.0.0'
 annotationProcessor 'com.lure.infuser:compiler:1.0.0'
 ```
 
-android studio after 3.0
+* after 3.0
 ```groovy
 implementation 'com.lure.infuser:library:1.0.0'
 api 'com.lure.infuser:annotation:1.0.0'

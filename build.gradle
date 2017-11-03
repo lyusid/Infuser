@@ -22,9 +22,6 @@ allprojects {
         maven {
             url "file:///$System.env.ANDROID_HOME/extras/android/m2repository"
         }
-        maven {
-            url "https://dl.bintray.com/lxt318/infuser"
-        }
     }
 }
 
