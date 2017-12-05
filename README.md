@@ -4,7 +4,7 @@ Object injecting for classes where there is single type in contructor.
 It is a light weight library which has the same functions with Dagger,
 and is easily customized.
 
-* Besides empty constructor,it also supports array of basic data types.Including `int` `long` `float` `double` `char` `String`.
+* Besides empty constructor,it also supports array of basic data types,including `int` `long` `float` `double` `char` and class `String`.
 * Custom your constructor as you like.
 
 ```java
